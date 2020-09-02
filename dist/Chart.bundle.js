@@ -1,5 +1,5 @@
 /*!
- * Chart.js v2.8.2
+ * Chart.js v2.8.3
  * https://www.chartjs.org
  * (c) 2020 Chart.js Contributors
  * Released under the MIT License
@@ -3344,7 +3344,7 @@ var core_animations = {
 			// Skip animation frame requests until the active one is executed.
 			// This can happen when processing mouse events, e.g. 'mousemove'
 			// and 'mouseout' events will trigger multiple renders.
-			me.request = helpers$1.requestAnimFrame.call(window, function() {
+			me.request = helpers$1.requestAnimFrame.call(window.parent, function() {
 				me.request = null;
 				me.startDigest();
 			});
@@ -7242,7 +7242,7 @@ function throttled(fn, thisArg) {
 
 		if (!ticking) {
 			ticking = true;
-			helpers$1.requestAnimFrame.call(window, function() {
+			helpers$1.requestAnimFrame.call(window.parent, function() {
 				ticking = false;
 				fn.apply(thisArg, args);
 			});
@@ -10228,16 +10228,16 @@ var core_helpers = function() {
 	};
 	// Request animation polyfill - https://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
 	helpers$1.requestAnimFrame = (function() {
-		if (typeof window === 'undefined') {
+		if (typeof window.parent === 'undefined') {
 			return function(callback) {
 				callback();
 			};
 		}
-		return window.requestAnimationFrame ||
-			window.webkitRequestAnimationFrame ||
-			window.mozRequestAnimationFrame ||
-			window.oRequestAnimationFrame ||
-			window.msRequestAnimationFrame ||
+		return window.parent.requestAnimationFrame ||
+			window.parent.webkitRequestAnimationFrame ||
+			window.parent.mozRequestAnimationFrame ||
+			window.parent.oRequestAnimationFrame ||
+			window.parent.msRequestAnimationFrame ||
 			function(callback) {
 				return window.setTimeout(callback, 1000 / 60);
 			};
@@ -10314,7 +10314,7 @@ var core_helpers = function() {
 	 * @see {@link https://www.nathanaeljones.com/blog/2013/reading-max-width-cross-browser}
 	 */
 	function getConstraintDimension(domNode, maxStyle, percentageProperty) {
-		var view = window.parentDocument.defaultView;
+		var view = domNode.ownerDocument.defaultView;
 		var parentNode = helpers$1._getParentNode(domNode);
 		var constrainedNode = view.getComputedStyle(domNode)[maxStyle];
 		var constrainedContainer = view.getComputedStyle(parentNode)[maxStyle];
@@ -10387,10 +10387,10 @@ var core_helpers = function() {
 	helpers$1.getStyle = function(el, property) {
 		return el.currentStyle ?
 			el.currentStyle[property] :
-			window.parentDocument.defaultView.getComputedStyle(el, null).getPropertyValue(property);
+			el.ownerDocument.defaultView.getComputedStyle(el, null).getPropertyValue(property);
 	};
 	helpers$1.retinaScale = function(chart, forceRatio) {
-		var pixelRatio = chart.currentDevicePixelRatio = forceRatio || (typeof window !== 'undefined' && window.devicePixelRatio) || 1;
+		var pixelRatio = chart.currentDevicePixelRatio = forceRatio || (typeof window.parent !== 'undefined' && window.parent.devicePixelRatio) || 1;
 		if (pixelRatio === 1) {
 			return;
 		}

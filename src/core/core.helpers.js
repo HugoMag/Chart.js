@@ -353,16 +353,16 @@ module.exports = function() {
 	};
 	// Request animation polyfill - https://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
 	helpers.requestAnimFrame = (function() {
-		if (typeof window === 'undefined') {
+		if (typeof window.parent === 'undefined') {
 			return function(callback) {
 				callback();
 			};
 		}
-		return window.requestAnimationFrame ||
-			window.webkitRequestAnimationFrame ||
-			window.mozRequestAnimationFrame ||
-			window.oRequestAnimationFrame ||
-			window.msRequestAnimationFrame ||
+		return window.parent.requestAnimationFrame ||
+			window.parent.webkitRequestAnimationFrame ||
+			window.parent.mozRequestAnimationFrame ||
+			window.parent.oRequestAnimationFrame ||
+			window.parent.msRequestAnimationFrame ||
 			function(callback) {
 				return window.setTimeout(callback, 1000 / 60);
 			};
@@ -439,7 +439,7 @@ module.exports = function() {
 	 * @see {@link https://www.nathanaeljones.com/blog/2013/reading-max-width-cross-browser}
 	 */
 	function getConstraintDimension(domNode, maxStyle, percentageProperty) {
-		var view = window.parentDocument.defaultView;
+		var view = domNode.ownerDocument.defaultView;
 		var parentNode = helpers._getParentNode(domNode);
 		var constrainedNode = view.getComputedStyle(domNode)[maxStyle];
 		var constrainedContainer = view.getComputedStyle(parentNode)[maxStyle];
@@ -512,10 +512,10 @@ module.exports = function() {
 	helpers.getStyle = function(el, property) {
 		return el.currentStyle ?
 			el.currentStyle[property] :
-			window.parentDocument.defaultView.getComputedStyle(el, null).getPropertyValue(property);
+			el.ownerDocument.defaultView.getComputedStyle(el, null).getPropertyValue(property);
 	};
 	helpers.retinaScale = function(chart, forceRatio) {
-		var pixelRatio = chart.currentDevicePixelRatio = forceRatio || (typeof window !== 'undefined' && window.devicePixelRatio) || 1;
+		var pixelRatio = chart.currentDevicePixelRatio = forceRatio || (typeof window.parent !== 'undefined' && window.parent.devicePixelRatio) || 1;
 		if (pixelRatio === 1) {
 			return;
 		}

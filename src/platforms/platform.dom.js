@@ -160,7 +160,7 @@ function throttled(fn, thisArg) {
 
 		if (!ticking) {
 			ticking = true;
-			helpers.requestAnimFrame.call(window, function() {
+			helpers.requestAnimFrame.call(window.parent, function() {
 				ticking = false;
 				fn.apply(thisArg, args);
 			});
